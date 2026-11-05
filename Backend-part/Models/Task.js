@@ -1,9 +1,7 @@
 const mongoose = require("mongoose")
 
-const { task } = mongoose
-
-const taskSchema = new task({
-    tittle:{
+const taskSchema = mongoose.Schema({
+    title: {
         type: String,
         required: true
     },
@@ -13,6 +11,5 @@ const taskSchema = new task({
         default: false
     }
 })
-
 
 module.exports = mongoose.model("todo", taskSchema)
