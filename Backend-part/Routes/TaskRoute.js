@@ -13,5 +13,15 @@ Route.post("/add", async (req, res) => {
 
 })
 
+// get all task
+
+Route.get("/all", async (req, res) => {
+
+    const tasks = await Task.find()
+
+    res.json(tasks)
+
+})
+
 
 module.exports = Route
