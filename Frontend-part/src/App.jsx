@@ -4,7 +4,8 @@ import axios from "axios";
 function App() {
   const [tasks, setTasks] = useState([]);
   const [title, setTitle] = useState("");
-
+  const [editId, setEditId] = useState(null);
+  const [editTitle, setEditTitle] = useState("");
   // get all task
   const getTasks = async () => {
     const res = await axios.get("http://localhost:5000/api/task/all");
@@ -30,6 +31,21 @@ function App() {
   const deleteTask = async (id) => {
     await axios.delete(`http://localhost:5000/api/task/delete/${id}`);
 
+    getTasks();
+  };
+
+  // update task
+  const updateTask = async (id) => {
+    if (!editTitle.trim()) {
+      return;
+    }
+
+    await axios.put(`http://localhost:5000/api/task/update/${id}`, {
+      title: editTitle,
+    });
+
+    setEditId(null);
+    setEditTitle("");
     getTasks();
   };
 
@@ -65,14 +81,44 @@ function App() {
             key={task._id}
             className="bg-white p-4 rounded-lg shadow flex justify-between items-center"
           >
-            <h2 className="text-lg font-medium">{task.title}</h2>
+            {editId === task._id ? (
+              <input
+                type="text"
+                value={editTitle}
+                onChange={(e) => setEditTitle(e.target.value)}
+                className="border p-2 rounded-lg flex-1 mr-3 outline-none"
+              />
+            ) : (
+              <h2 className="text-lg font-medium">{task.title}</h2>
+            )}
 
-            <button
-              onClick={() => deleteTask(task._id)}
-              className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600"
-            >
-              Delete
-            </button>
+            <div className="flex gap-2">
+              {editId === task._id ? (
+                <button
+                  onClick={() => updateTask(task._id)}
+                  className="bg-green-500 text-white px-4 py-2 rounded-lg"
+                >
+                  Update
+                </button>
+              ) : (
+                <button
+                  onClick={() => {
+                    setEditId(task._id);
+                    setEditTitle(task.title);
+                  }}
+                  className="bg-blue-500 text-white px-4 py-2 rounded-lg"
+                >
+                  Edit
+                </button>
+              )}
+
+              <button
+                onClick={() => deleteTask(task._id)}
+                className="bg-red-500 text-white px-4 py-2 rounded-lg"
+              >
+                Delete
+              </button>
+            </div>
           </div>
         ))}
       </div>
