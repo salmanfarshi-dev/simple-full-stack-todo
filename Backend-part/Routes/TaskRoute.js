@@ -23,5 +23,34 @@ Route.get("/all", async (req, res) => {
 
 })
 
+// delete task
+
+Route.delete("/delete/:id", async (req, res) => {
+
+    const task = await Task.findByIdAndDelete(req.params.id)
+
+    res.json({
+        message: "Task deleted successfully"
+    })
+})
+
+// update task
+
+Route.put("/update/:id", async (req, res) => {
+
+    const task = await Task.findByIdAndUpdate(
+        req.params.id,
+        {
+            title: req.body.title
+        },
+        { new: true }
+    )
+
+    res.json({
+        message: "Task updated successfully",
+        task: task
+    })
+})
+
 
 module.exports = Route
